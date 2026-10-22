@@ -1,0 +1,53 @@
+{
+  "out": {
+    "result": {
+      "species": "紅葉",
+      "stage_label": "色づき始め",
+      "place_name": "高尾山薬王院",
+      "prefecture": "東京都",
+      "municipality": "八王子市",
+      "evidence_image": "手前のモミジは一部赤いが緑色が多い。",
+      "evidence_text": "もみじが先っぽからほんのり色づいてきた。まだ緑が多め。",
+      "reasoning": "写真と本文の両方で緑が多く一部が色づき始めているため、色づき始めと判断した。",
+      "caution": "写真や場所により色づき具合に差があります。",
+      "consistency_note": "写真の様子と本文の記述が一致している。",
+      "area_detail": "薬王院あたり",
+      "time_note": "過去の写真や訪問を示す記述はないため。",
+      "stage": "咲き始め",
+      "consistency": "一致",
+      "bloom_ratio": 30,
+      "confidence": 0.95,
+      "time_reference": "投稿時の様子",
+      "lat": 35.6268,
+      "lng": 139.2435
+    },
+    "location": {
+      "lat": 35.6259997,
+      "lng": 139.2504407,
+      "source": "OSM Nominatim",
+      "query": "高尾山薬王院 八王子市 東京都"
+    },
+    "gemini_location": {
+      "lat": 35.6268,
+      "lng": 139.2435,
+      "source": "Gemini 推定"
+    },
+    "validation": {
+      "ok": true,
+      "issues": [],
+      "warnings": [],
+      "locatable": true
+    },
+    "input": {
+      "text": "高尾山の薬王院あたり、もみじが先っぽからほんのり色づいてきた。まだ緑が多め。",
+      "sample": "s3",
+      "observed_at": "2026-10-20T11:05:00+09:00",
+      "synthetic": true,
+      "photo_taken_at": null,
+      "photo_time_source": null,
+      "fingerprint": "785856f9ec6fc972"
+    },
+    "observed_at": "2026-10-20T11:05:00+09:00",
+    "analyzed_at": "2026-10-22T17:35:44+09:00"
+  }
+}

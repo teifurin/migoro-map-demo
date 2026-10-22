@@ -1,0 +1,17 @@
+{
+  "about": "異常系の回帰用入力（合成データ）。画像はすべて AI 生成、本文・投稿者・日時は架空。デモ画面には表示せず、サーバーからも配信しない。オフラインの回帰テスト用に用意した入力例。tests/ のテストは make test で実行でき、外部 API には接続しない。",
+  "cases": [
+    {"id": "s5_future", "kind": "future_date", "image": "samples/s5_momiji_peak.jpg", "text": "東福寺の通天橋から。谷一面がまっ赤で、緑がほとんど残ってない！今が一番きれいかも。 #紅葉 #京都", "observed_at": "2026-11-22T10:20", "as_sample": true, "expect": "未来の投稿日時：現在の段階は変えない（照合できれば履歴のみ、できなければ保留）。旧デモサンプル s5"},
+    {"id": "s7_future", "kind": "future_date", "image": "samples/edge/s7_momiji_takao_peak.jpg", "text": "高尾山の薬王院、もみじが真っ赤になってた！参道がトンネルみたい。", "observed_at": "2026-11-20T10:45", "as_sample": true, "expect": "未来の投稿日時：現在の段階は変えない。旧デモサンプル s7"},
+    {"id": "e_future_upload", "kind": "future_date", "image": "samples/s3_momiji_start.jpg", "text": "高尾山の薬王院、もみじが色づき始め。", "observed_at": "2026-12-25T10:00", "expect": "アップロードの未来日時は HTTP 400 future_observed_at（Gemini を呼ばない）"},
+    {"id": "e_old_photo", "kind": "old_photo", "image": "samples/s5_momiji_peak.jpg", "text": "去年の11月に撮った東福寺の通天橋の写真。今年もこんな感じになるかな？", "observed_at": "2026-10-22T15:00", "expect": "time_reference=過去の写真・訪問 → 現在の段階は変えない"},
+    {"id": "e_exif_old", "kind": "old_photo", "image": "samples/s5_momiji_peak.jpg", "exif_datetime": "2025:11:20 10:30:00", "text": "東福寺の通天橋。真っ赤！", "observed_at": "2026-10-22T15:30", "expect": "EXIF の撮影日時が投稿より2日以上前 → 現在の段階は変えない"},
+    {"id": "e_missing_date", "kind": "missing_date", "image": "samples/s1_higanbana_peak.jpg", "text": "明日香村の稲渕の棚田。彼岸花が真っ赤！", "observed_at": null, "expect": "投稿日時不明と明示。既存の日時つき観測は上書きしない"},
+    {"id": "e_park_east", "kind": "area_confusion", "image": "samples/s2_higanbana_bud.jpg", "text": "伏見の北堀公園、東側の斜面はまだ蕾ばかり。", "observed_at": "2026-09-21T09:00", "expect": "area_detail=東側 を抽出。施設全体スポットとも西側とも自動統合しない"},
+    {"id": "e_park_west", "kind": "area_confusion", "image": "samples/s1_higanbana_peak.jpg", "text": "伏見の北堀公園、西側の広場あたりは真っ赤で見頃！", "observed_at": "2026-09-21T09:30", "expect": "area_detail=西側。東側と自動統合しない（写真は棚田なので矛盾の指摘もあり得る）"},
+    {"id": "e_park_centre", "kind": "park_centre", "image": "samples/s5_momiji_peak.jpg", "text": "東福寺の紅葉、きれいでした。", "observed_at": "2026-10-22T12:00", "expect": "区域の書かれていない投稿（地理位置は寺の中心）は、区域スポット「東福寺・通天橋」に自動統合しない → 要確認"},
+    {"id": "e_contradiction", "kind": "contradiction", "image": "samples/s4_higanbana_fade.jpg", "text": "権現堂堤、今まさに満開！最高の見頃です", "observed_at": "2026-10-02T18:00", "expect": "写真と本文の矛盾を検出し、写真を優先して要確認フラグ"},
+    {"id": "e_no_place", "kind": "no_place", "image": "samples/s3_momiji_start.jpg", "text": "もみじきれい", "observed_at": "2026-10-20T12:00", "expect": "位置を推定できない → 地図は更新しない"},
+    {"id": "e_duplicate", "kind": "duplicate", "image": "samples/s6_momiji_falling.jpg", "text": "日光いろは坂、紅葉まっさかり！最高の見頃です✨ #いろは坂 #紅葉", "observed_at": null, "repeat": 2, "expect": "同じ画像＋本文の再投入は日時が無くても重複扱い。未解決の要確認は維持"}
+  ]
+}

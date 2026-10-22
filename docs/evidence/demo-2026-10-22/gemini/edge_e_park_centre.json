@@ -1,0 +1,53 @@
+{
+  "out": {
+    "result": {
+      "species": "紅葉",
+      "stage_label": "見頃",
+      "place_name": "東福寺",
+      "prefecture": "京都府",
+      "municipality": "京都市東山区",
+      "evidence_image": "通天橋周辺のモミジが一面に鮮やかに赤く色づいている。",
+      "evidence_text": "東福寺の紅葉がきれいであった旨が記述されている。",
+      "reasoning": "写真では通天橋周辺の木々が深紅に染まっており、本文の感想とも一致するため見頃と判断。",
+      "caution": "",
+      "consistency_note": "写真の見頃の紅葉と本文の絶景についての記述が一致。",
+      "area_detail": "",
+      "time_note": "過去を示す具体的な表記がなく直近の訪問と推測。",
+      "stage": "見頃",
+      "consistency": "一致",
+      "bloom_ratio": 90,
+      "confidence": 0.95,
+      "time_reference": "投稿時の様子",
+      "lat": 34.9813,
+      "lng": 135.7742
+    },
+    "location": {
+      "lat": 34.9771706,
+      "lng": 135.7745754,
+      "source": "OSM Nominatim",
+      "query": "東福寺 京都市東山区 京都府"
+    },
+    "gemini_location": {
+      "lat": 34.9813,
+      "lng": 135.7742,
+      "source": "Gemini 推定"
+    },
+    "validation": {
+      "ok": true,
+      "issues": [],
+      "warnings": [],
+      "locatable": true
+    },
+    "input": {
+      "text": "東福寺の紅葉、きれいでした。",
+      "sample": null,
+      "observed_at": "2026-10-22T12:00:00+09:00",
+      "synthetic": false,
+      "photo_taken_at": null,
+      "photo_time_source": null,
+      "fingerprint": "c701ab248327ce28"
+    },
+    "observed_at": "2026-10-22T12:00:00+09:00",
+    "analyzed_at": "2026-10-22T17:37:16+09:00"
+  }
+}

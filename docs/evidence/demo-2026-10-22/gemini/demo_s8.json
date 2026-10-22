@@ -1,0 +1,53 @@
+{
+  "out": {
+    "result": {
+      "species": "紅葉",
+      "stage_label": "見頃",
+      "place_name": "東福寺",
+      "prefecture": "京都府",
+      "municipality": "京都市東山区",
+      "evidence_image": "通天橋周辺の木々が鮮やかに赤く染まっており見頃の様子。",
+      "evidence_text": "去年の11月に撮った東福寺の通天橋の写真と記載。",
+      "reasoning": "画像では通天橋周辺のモミジが全体的に鮮やかに赤く色づいており、紅葉の見頃ピークであると判定できる。",
+      "caution": "写真は過去（昨年）に撮影されたものであり現在の様子ではない。",
+      "consistency_note": "本文にある紅葉の写真という内容と画像内容が一致している。",
+      "area_detail": "通天橋",
+      "time_note": "本文中に「去年の11月に撮った」との記載があるため。",
+      "stage": "見頃",
+      "consistency": "一致",
+      "bloom_ratio": 95,
+      "confidence": 0.95,
+      "time_reference": "過去の写真・訪問",
+      "lat": 34.9814,
+      "lng": 135.7738
+    },
+    "location": {
+      "lat": 34.9771706,
+      "lng": 135.7745754,
+      "source": "OSM Nominatim",
+      "query": "東福寺 京都市東山区 京都府"
+    },
+    "gemini_location": {
+      "lat": 34.9814,
+      "lng": 135.7738,
+      "source": "Gemini 推定"
+    },
+    "validation": {
+      "ok": true,
+      "issues": [],
+      "warnings": [],
+      "locatable": true
+    },
+    "input": {
+      "text": "去年の11月に撮った東福寺の通天橋の写真。今年もこんな感じになるかな？ #紅葉 #京都",
+      "sample": "s8",
+      "observed_at": "2026-10-22T15:00:00+09:00",
+      "synthetic": true,
+      "photo_taken_at": null,
+      "photo_time_source": null,
+      "fingerprint": "30741ace9baa8122"
+    },
+    "observed_at": "2026-10-22T15:00:00+09:00",
+    "analyzed_at": "2026-10-22T17:36:29+09:00"
+  }
+}

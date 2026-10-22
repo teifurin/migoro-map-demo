@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>みんなの"見頃"マップ — Gemini が SNS の写真を読み解く</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+:root{--ink:#2b1f22;--muted:#6d5c60;--line:#ead7d4;--soft:#f6eeeb;--crimson:#c41e3a;--g1:#4285f4;--g2:#9b72cb;--g3:#d96570;--shadow:0 10px 30px rgba(60,20,24,.12)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"Noto Sans JP","Hiragino Sans","Noto Sans CJK JP",sans-serif;color:var(--ink);background:#efe4df;display:flex;overflow:hidden}
+#panel{width:480px;flex-shrink:0;height:100%;overflow:auto;background:#fffaf7;border-right:1px solid var(--line);display:flex;flex-direction:column}
+#map{flex:1;height:100%}
+header{padding:12px 16px 10px;border-bottom:1px solid var(--line);background:#fff}
+header h1{font-size:19px;letter-spacing:.02em}
+header p{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6}
+.gem{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;color:#fff;background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3))}
+.sec{padding:10px 16px}
+.sec h2{font-size:12px;color:var(--muted);letter-spacing:.08em;margin-bottom:8px}
+.posts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.post{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;cursor:pointer;text-align:left;font:inherit;color:inherit;padding:0}
+.post:hover{border-color:#f0b8b4}.post.active{border-color:var(--g1);box-shadow:0 0 0 3px rgba(66,133,244,.18)}
+.post img{width:100%;height:64px;object-fit:cover;display:block}
+.post .t{font-size:9.5px;line-height:1.4;padding:4px 6px;color:#4d3c3e;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.post .h{display:none}
+.up{border:1.5px dashed #e3c5bf;border-radius:12px;padding:6px 10px;background:#fff;font-size:11px}
+.up textarea{width:100%;height:34px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:inherit;font-size:12px;margin-top:6px;resize:vertical}
+.btn{margin-top:4px;width:100%;border:0;border-radius:12px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3))}
+.btn:disabled{opacity:.55;cursor:wait}
+#preview{display:none;grid-template-columns:150px 1fr;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;margin-bottom:8px}
+#preview img{width:150px;height:112px;object-fit:cover;display:block;grid-row:span 2}
+#preview .t{font-size:12px;line-height:1.55;padding:8px 10px 2px}
+#preview .h{font-size:11px;color:#8a7672;padding:0 10px 8px}
+#result{display:none;border-radius:14px;background:#fff;border:1px solid #d9e2f6;box-shadow:var(--shadow);overflow:hidden}
+#result .rh{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#f3f6fd;border-bottom:1px solid #e1e8f8;font-size:11px;color:#4a5878}
+.rb{padding:12px}
+.big{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.stage{font-size:20px;font-weight:800;padding:4px 14px;border-radius:999px;color:#fff}
+.species{font-size:15px;font-weight:700}
+.kv{display:grid;grid-template-columns:86px minmax(0,1fr);gap:5px 8px;font-size:12px;line-height:1.55}.kv dd{min-width:0;overflow-wrap:anywhere}
+.kv dt{color:var(--muted)}.kv dd{font-weight:500}
+.bar{height:7px;background:#eee;border-radius:9px;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;width:0;transition:width .8s}
+.why{margin-top:10px;font-size:12.5px;line-height:1.7;background:#fff8f4;border:1px dashed #ead0c8;border-radius:10px;padding:8px 10px}
+.why b{display:block;font-size:10px;color:var(--muted)}
+details{margin-top:8px;font-size:11px}details pre{white-space:pre-wrap;background:#1f2430;color:#d7e1ff;border-radius:8px;padding:8px;margin-top:6px;font-size:10.5px;max-height:220px;overflow:auto}
+.think{display:none;padding:14px;font-size:13px;color:#4a5878;align-items:center;gap:10px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--g1);animation:b 1s infinite alternate}
+.dot:nth-child(2){background:var(--g2);animation-delay:.2s}.dot:nth-child(3){background:var(--g3);animation-delay:.4s}
+@keyframes b{to{transform:translateY(-6px);opacity:.4}}
+.reveal>*{opacity:0;transform:translateY(6px);animation:in .45s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+#log{font-size:11px;color:var(--muted);line-height:1.6}
+#log li{margin-left:16px}
+.legend{position:absolute;right:12px;bottom:22px;z-index:500;background:rgba(255,250,247,.95);border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);font-size:11.5px}
+.legend div{display:flex;align-items:center;gap:7px;margin:3px 0}.sw{width:11px;height:11px;border-radius:50%;display:inline-block}
+.legend .ai{margin-top:6px;border-top:1px solid var(--line);padding-top:6px}
+.pin{filter:drop-shadow(0 2px 3px rgba(40,10,16,.4))}
+.leaflet-div-icon{background:transparent!important;border:none!important}
+.newpin{position:relative}
+.newpin::after{content:"";position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;border:3px solid var(--g1);animation:p 1.4s ease-out infinite}
+@keyframes p{from{transform:scale(.4);opacity:1}to{transform:scale(1.4);opacity:0}}
+.seasons{display:flex;gap:6px;margin-top:6px}.seasons span{font-size:11px;padding:2px 9px;border-radius:999px;background:#fbe9e4;color:#7a2a2a;font-weight:700}.seasons .soon{background:#fdf0f5;color:#b05a80;border:1px dashed #e9b3c9;font-weight:500}
+.cmp{margin-top:10px;border:1px solid #d9e2f6;border-radius:10px;padding:8px 10px;font-size:12px;line-height:1.7;background:#f7f9fe}.cmp b.t{display:block;font-size:10px;color:#4a5878;letter-spacing:.06em}
+.cmp .row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px}.cmp .chip{padding:1px 9px;border-radius:999px;color:#fff;font-weight:700;font-size:12px}
+.cmp .dec{margin-top:4px;font-weight:700}.dec.upd{color:#1a5fd0}.dec.new{color:#1a7f4b}.dec.flag{color:#b36200}.dec.hold{color:#7a6a6a}
+.cons{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:999px}.cons.ok{background:#e6f4ea;color:#1a7f4b}.cons.part{background:#fff4e0;color:#9a5b00}.cons.ng{background:#fde4e1;color:#b3261e}
+.flagpin{position:relative}.flagpin::after{content:"";position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;border:3px dashed #e08600;animation:p 1.4s ease-out infinite}
+.foot{font-size:10px;color:#8a7672;padding:8px 16px 14px;line-height:1.6;margin-top:auto}
+.leaflet-popup-content{font-size:12px;line-height:1.6}
+.warnbox{margin-bottom:8px;padding:6px 10px;border-radius:10px;background:#fff4e0;color:#8a4b00;font-size:12px;font-weight:700;line-height:1.6}
+.evidence-note{font-size:11px;line-height:1.6;color:var(--muted);background:var(--soft);padding:8px;border-radius:8px;margin-bottom:8px}
+.leaflet-popup-content{max-height:55vh;overflow:auto;overflow-wrap:anywhere}.leaflet-popup-content p{margin:5px 0}.leaflet-popup-content ol{padding-left:18px}
+.tnote{margin-top:3px;font-size:11px;font-weight:500;color:#7a5a12}
+.confirm-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.confirm-row button{font:inherit;font-size:11.5px;border:1px solid #c9d6f3;background:#fff;color:#1a4fb0;border-radius:8px;padding:5px 9px;cursor:pointer;text-align:left}
+.confirm-row button:disabled{opacity:.5;cursor:default}
+/* スマートフォン：パネルと地図を縦に並べ、ページ全体をスクロールさせる */
+@media (max-width:700px){
+  body{flex-direction:column;overflow:auto;height:auto}
+  html,body{height:auto}
+  #panel{width:100%;height:auto;overflow:visible;border-right:0;border-bottom:1px solid var(--line)}
+  #map{flex:none;height:70vh;min-height:360px}
+  .posts{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #preview{grid-template-columns:110px 1fr}#preview img{width:110px;height:96px}
+  .kv{grid-template-columns:72px minmax(0,1fr)}.kv dd{overflow-wrap:anywhere}
+  .legend{position:static;margin:8px 12px 16px;box-shadow:none;border:1px solid var(--line)}
+  .leaflet-popup-content{max-height:45vh}
+}
+.synth-banner{margin-top:8px;font-size:11px;line-height:1.55;padding:6px 10px;border-radius:8px;background:#eef3fd;color:#29457a;border:1px solid #d3def5}
+.post{position:relative}.post .synth{position:absolute;left:4px;top:4px;z-index:1;font-size:9px;font-weight:700;padding:1px 6px;border-radius:999px;background:rgba(41,69,122,.85);color:#fff}
+.up .fdate{display:block;margin-top:4px;color:#6d5c60}.up .fdate input{font:inherit;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:2px 4px}
+</style>
+</head>
+<body>
+<div id="panel">
+  <header>
+    <span class="gem">✦ Gemini で読み解く</span>
+    <h1 style="margin-top:8px">みんなの"見頃"マップ</h1>
+    <p>SNS の現地投稿（写真＋本文）を Gemini が読み、写真と本文の整合性・見頃の段階・場所を判定。近くでも場所が違えば開き方は別。地点名と距離を慎重に照合し、根拠と投稿日時を残します。</p>
+    <div class="synth-banner" id="synthBanner">ここに並ぶ投稿はすべて<b>合成デモデータ</b>です（AI 生成画像・架空の本文/投稿者/日時）。実在の投稿ではありません。地図の初期データも、従来型マップを想定した合成データです。</div>
+    <div class="seasons"><span>🍁 紅葉</span><span>🌺 彼岸花</span><span class="soon">🌸 桜：来春対応予定</span></div>
+  </header>
+  <div class="sec">
+    <h2>① 投稿を選ぶ（合成デモデータ）</h2>
+    <div class="posts" id="posts"></div>
+    <div class="up" style="margin-top:8px">
+      <label>または写真をアップロード <input type="file" id="file" accept="image/*" /></label>
+      <textarea id="ftext" placeholder="投稿の本文（場所がわかる一文を含めてください）"></textarea>
+      <label class="fdate">投稿日時（撮影日時ではありません・日本時間） <input type="datetime-local" id="fdate" /></label>
+    </div>
+  </div>
+  <div class="sec">
+    <h2>② Gemini の判定</h2>
+    <div id="preview"><img id="pimg" alt="" /><div class="t" id="ptext"></div><div class="h" id="phandle"></div></div>
+    <button class="btn" id="go" disabled>✦ Gemini で読み解く</button>
+    <div class="think" id="think"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>Gemini が写真と本文を読んでいます…</span></div>
+    <div id="result" style="margin-top:10px"></div>
+  </div>
+  <div class="sec">
+    <h2>③ 地図への反映ログ</h2>
+    <ul id="log"><li>サンプル初期データ：紅葉 2・彼岸花 16 スポット（合成デモデータ・従来型マップの掲載情報を想定）</li></ul>
+  </div>
+  <div class="foot">サンプル写真はすべて AI 生成画像で、実在の投稿・人物ではありません（投稿者名も架空）。位置は OpenStreetMap Nominatim（無料）と Gemini の推定を照合。地図：国土地理院 淡色地図。デモ用ローカル版。</div>
+</div>
+<div id="map"></div>
+<div class="legend" id="legend"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="seed.js"></script>
+<script src="logic.js"></script>
+<script>
+const Lg = window.MigoroLogic, { STAGE, MOMIJI, lab, escapeHtml } = Lg;
+document.getElementById("legend").innerHTML = "<b style='font-size:11px;color:#6d5c60'>見頃の段階</b>" +
+  Object.entries(STAGE).map(([k,c])=>`<div><span class="sw" style="background:${c}"></span>${k}${MOMIJI[k]!==k?` <span style="color:#8a7672">／紅葉：${MOMIJI[k]}</span>`:""}</div>`).join("") +
+  `<div class="ai"><span class="sw" style="background:#4285f4"></span>Gemini が今回更新</div><div><span class="sw" style="background:#fff;border:2px dashed #e08600"></span>要確認（矛盾・観測の食い違い）</div>` +
+  `<div style="color:#b05a80">🌸 桜：来春対応予定</div>`;
+
+const map = L.map("map",{zoomControl:false}).setView([35.3,137.2],6);
+L.control.zoom({position:"topright"}).addTo(map);
+L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",{attribution:"<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>国土地理院</a>",maxZoom:18}).addTo(map);
+
+function glyph(species,color){
+  if(/紅葉|もみじ|楓/.test(species)) return `<svg class="pin" width="34" height="34" viewBox="0 0 64 64"><path fill="${color}" d="M32 4l5 13 10-6-3 13 13-1-9 10 8 6-14 3 3 9-11-6-2 15-2-15-11 6 3-9-14-3 8-6-9-10 13 1-3-13 10 6z"/><path d="M32 40v20" stroke="#5a3a20" stroke-width="2"/></svg>`;
+  if(/桜/.test(species)) return `<svg class="pin" width="32" height="32" viewBox="0 0 64 64"><g fill="${color}">${[0,72,144,216,288].map(a=>`<ellipse cx="32" cy="16" rx="9" ry="13" transform="rotate(${a} 32 32)"/>`).join("")}</g><circle cx="32" cy="32" r="5" fill="#fff6c0"/></svg>`;
+  return `<svg class="pin" width="32" height="32" viewBox="0 0 64 64"><g fill="${color}">${[0,51,103,154,206,257,309].map(a=>`<path transform="rotate(${a} 32 33)" d="M32 33 C30 20 23 10 32 6 C41 10 34 20 32 33"/>`).join("")}</g><g stroke="#f6e39a" stroke-width="1.4">${[0,60,120,180,240,300].map(a=>`<line transform="rotate(${a} 32 33)" x1="32" y1="33" x2="32" y2="8"/>`).join("")}</g><circle cx="32" cy="33" r="3.6" fill="#5a1018"/></svg>`;
+}
+// 色は固定パレット（Lg.stageColor）のみ、種類は正規表現の判定にだけ使う → 動的文字列は HTML に入らない
+function icon(s,isNew){return L.divIcon({className:"",iconSize:[34,34],iconAnchor:[17,17],html:`<div class="${s.flag?"flagpin":isNew?"newpin":""}">${glyph(Lg.norm(s.species),Lg.stageColor(s.stage))}</div>`});}
+const spots = {};
+SEED.forEach(s=>{ s.history=[]; s.marker=L.marker([s.lat,s.lng],{icon:icon(s)}).addTo(map).bindPopup(Lg.popupHtml(s)); spots[s.id]=s; });
+
+const $ = id => document.getElementById(id);
+const gate = new Lg.RequestGate(), sel = new Lg.SelectionTracker();
+let SAMPLES=[], chosen=null, upload=null, gid=0, CLIENT_TIMEOUT_MS=160000;
+// 表示中の判定結果の版数。新しい選択・再実行・入力変更で進み、古い結果の確認ボタンは無効になる
+let resultSeq=0;
+
+function hasInput(){ return !!(chosen || upload); }
+function setBusy(b){ $("go").disabled = b || !hasInput(); $("think").style.display = b ? "flex" : "none"; }
+function cancelRunning(){ if(gate.busy){ gate.cancel(); setBusy(false); } }
+// 現地時間（日本時間）の datetime-local 既定値
+function nowLocalInput(){ return Lg.fmtTime(Date.now()).replace(" ","T"); }
+// 撮影・投稿日時を現在時刻で埋めると古い写真を新しい情報に見せるため、未入力を既定にする。
+$("fdate").value = "";
+
+fetch("samples/samples.json").then(r=>r.json()).then(list=>{
+  SAMPLES=list;
+  $("posts").innerHTML = list.map(Lg.sampleCardHtml).join("");
+  document.querySelectorAll(".post").forEach(b=>b.onclick=()=>choose(b.dataset.id));
+});
+function choose(id){
+  const s=SAMPLES.find(x=>x.id===id); if(!s) return;
+  sel.next(); cancelRunning();
+  chosen=s; upload=null; $("file").value="";
+  document.querySelectorAll(".post").forEach(b=>b.classList.toggle("active",b.dataset.id===id));
+  showPreview(s.image,s.text,`${s.handle} · ${s.posted}（合成デモデータ・架空の投稿）`);
+}
+function showPreview(src,text,handle){
+  $("preview").style.display="grid";
+  $("pimg").src=src; $("ptext").textContent=text; $("phandle").textContent=handle;
+  $("result").style.display="none"; $("result").dataset.state=""; resultSeq++;
+  setBusy(gate.busy);
+}
+$("file").onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const ver=sel.next(); cancelRunning();
+  // FileReader の完了を待たず、前の判定と確認ボタンを無効にする（読み込み失敗時も同じ）。
+  resultSeq++; $("result").style.display="none"; $("result").dataset.state=""; $("result").innerHTML="";
+  chosen=null; upload=null; setBusy(false);
+  document.querySelectorAll(".post").forEach(b=>b.classList.remove("active"));
+  const rd=new FileReader();
+  rd.onload=()=>{
+    if(!sel.isCurrent(ver)) return; // 読み込み中に別の投稿が選ばれた → 古い読み込み結果は捨てる
+    upload={mime:f.type||"image/jpeg",b64:String(rd.result).split(",")[1],url:rd.result};
+    showPreview(upload.url,$("ftext").value||"（本文なし）","アップロード画像");
+  };
+  rd.onerror=()=>{ if(sel.isCurrent(ver)) showError("画像を読み込めませんでした"); };
+  rd.readAsDataURL(f);
+};
+// アップロード投稿の本文・日時は分析の入力そのもの。変更されたら、実行中の分析は中断し、表示中の結果は破棄する
+function invalidateUploadAnalysis(){
+  if(!upload) return;                 // サンプル選択中は本文欄・日時欄を送らないので影響なし
+  const box=$("result"), wasBusy=gate.busy; resultSeq++;
+  if(wasBusy){ gate.cancel(); setBusy(false); }
+  if(wasBusy || ["ok","error","loading"].includes(box.dataset.state)){
+    box.style.display="block"; box.dataset.state="stale";
+    box.innerHTML=Lg.staleHtml(wasBusy ? "投稿の本文・日時が変更されたため、実行中の分析を中止しました。もう一度「Gemini で読み解く」を押してください。" : "");
+  }
+}
+$("ftext").oninput=e=>{ if(upload){ $("ptext").textContent=e.target.value; invalidateUploadAnalysis(); } };
+$("fdate").oninput=$("fdate").onchange=()=>invalidateUploadAnalysis();
+
+function showError(msg){
+  const box=$("result"); box.style.display="block"; box.dataset.state="error"; box.innerHTML=Lg.errorHtml(msg);
+}
+
+$("go").onclick=async()=>{
+  if(gate.busy || !hasInput()) return;
+  const box=$("result");
+  const body = chosen ? {sample:chosen.id}
+    : {image_b64:upload.b64, mime:upload.mime, text:$("ftext").value, observed_at:$("fdate").value||null};
+  const {id, signal} = gate.start(CLIENT_TIMEOUT_MS);
+  box.style.display="none"; box.dataset.state="loading"; setBusy(true); resultSeq++;
+  try{
+    const r = await fetch("/api/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),signal});
+    const d = await r.json().catch(()=>({error:`HTTP ${r.status}（応答が JSON ではありません）`}));
+    if(!gate.isCurrent(id)) return;              // 古いリクエストの応答は捨てる
+    if(!r.ok || d.error) throw new Error(d.error || `HTTP ${r.status}`);
+    render(d); plot(d); box.dataset.state="ok";
+  }catch(e){
+    if(!gate.isCurrent(id)) return;
+    showError(e && e.name==="AbortError" && gate.timedOut(id)
+      ? `${Math.round(CLIENT_TIMEOUT_MS/1000)} 秒以内に応答がなかったため中断しました。少し待って再試行してください。`
+      : (e && e.message) || String(e));
+  }finally{
+    if(gate.finish(id)) setBusy(false);          // 自分のリクエストのときだけ読み込み表示を消す
+  }
+};
+
+function render(d){
+  const box=$("result");
+  box.style.display="block";
+  box.innerHTML = Lg.resultHtml(d);
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+  [...box.querySelectorAll(".reveal>*")].forEach((el,i)=>el.style.animationDelay=(i*0.18)+"s");
+  setTimeout(()=>{ box.querySelectorAll(".bar i").forEach(i=>i.style.width=(Number(i.dataset.w)||0)+"%"); },300);
+}
+
+function plot(d){ applyPlot(d, Lg.planPlot(d, spots, {newId:()=>`g${Date.now()}_${++gid}`}), ++resultSeq); }
+function applyPlot(d, p, seq){
+  const li=document.createElement("li");
+  $("cmp").innerHTML = p.cmpHtml; li.innerHTML = p.logHtml; $("log").prepend(li);
+  // 要確認（同じ場所か不明）のときは、人が候補を選んだ場合だけ反映する
+  $("cmp").querySelectorAll("button.confirm").forEach(b=>b.onclick=()=>{
+    if(seq!==resultSeq) return;
+    $("cmp").querySelectorAll("button.confirm").forEach(x=>x.disabled=true);
+    const confirm = b.dataset.confirm==="new" ? {asNew:true} : {spotId:b.dataset.spot};
+    applyPlot(d, Lg.planPlot(d, spots, {newId:()=>`g${Date.now()}_${++gid}`, confirm}), seq);
+  });
+  const s = Lg.applyPlan(spots, p);   // 状態の変更は logic.js 側（テスト対象）で行い、ここでは Leaflet に反映するだけ
+  if(!s) return;
+  if(p.action==="new") s.marker=L.marker([s.lat,s.lng],{icon:icon(s,true)}).addTo(map).bindPopup(Lg.popupHtml(s));
+  else if(p.action==="update") s.marker.setIcon(icon(s,true)).setPopupContent(Lg.popupHtml(s));
+  else s.marker.setPopupContent(Lg.popupHtml(s));
+  map.flyTo([s.lat,s.lng],11,{duration:1.2}); setTimeout(()=>s.marker.openPopup(),1300);
+}
+fetch("/api/status").then(r=>r.json()).then(st=>{
+  if(Number(st.client_timeout_s)>0) CLIENT_TIMEOUT_MS=Number(st.client_timeout_s)*1000;
+  if(st.gemini_api_key!=="set"){ const li=document.createElement("li"); li.style.color="#b00"; li.textContent="GEMINI_API_KEY: missing"; $("log").prepend(li); }
+});
+</script>
+</body>
+</html>

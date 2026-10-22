@@ -1,0 +1,8 @@
+[
+  {"id": "s3", "scenario": "a", "synthetic": true, "label": "合成デモデータ", "image": "samples/s3_momiji_start.jpg", "handle": "@sample_yamaaruki", "posted": "2026-10-20 11:05", "text": "高尾山の薬王院あたり、もみじが先っぽからほんのり色づいてきた。まだ緑が多め。"},
+  {"id": "s6", "scenario": "b", "synthetic": true, "label": "合成デモデータ", "image": "samples/s6_momiji_falling.jpg", "handle": "@sample_drive", "posted": "2026-10-21 14:05", "text": "日光いろは坂、紅葉まっさかり！最高の見頃です✨ #いろは坂 #紅葉"},
+  {"id": "s8", "scenario": "c", "synthetic": true, "label": "合成デモデータ", "image": "samples/s5_momiji_peak.jpg", "handle": "@sample_tabikyoto", "posted": "2026-10-22 15:00", "text": "去年の11月に撮った東福寺の通天橋の写真。今年もこんな感じになるかな？ #紅葉 #京都"},
+  {"id": "s1", "synthetic": true, "label": "合成デモデータ", "image": "samples/s1_higanbana_peak.jpg", "handle": "@sample_hanatabi", "posted": "2026-09-24 15:12", "text": "明日香村の稲渕の棚田に来ました。彼岸花が真っ赤で、黄金色の稲穂とのコントラストが最高！ #彼岸花 #明日香"},
+  {"id": "s2", "synthetic": true, "label": "合成デモデータ", "image": "samples/s2_higanbana_bud.jpg", "handle": "@sample_sanpo", "posted": "2026-09-20 09:40", "text": "伏見の北堀公園。まだほとんど蕾で、開いてるのはほんの少し。見頃は来週かな？"},
+  {"id": "s4", "synthetic": true, "label": "合成デモデータ", "image": "samples/s4_higanbana_fade.jpg", "handle": "@sample_kawazoi", "posted": "2026-10-02 17:30", "text": "幸手の権現堂堤。さすがにピークは過ぎて、茶色くなった花が目立つ。まだ赤いのも少し残ってた。"}
+]

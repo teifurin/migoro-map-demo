@@ -1,0 +1,53 @@
+{
+  "out": {
+    "result": {
+      "species": "紅葉",
+      "stage_label": "落葉が進む",
+      "place_name": "いろは坂",
+      "prefecture": "栃木県",
+      "municipality": "日光市",
+      "evidence_image": "山肌の木々の葉が大きく落ち、枝や地面の落ち葉が目立つ。",
+      "evidence_text": "「紅葉まっさかり！最高の見頃です」との記述あり。",
+      "reasoning": "本文では見頃とされているが、画像では樹木の落葉がかなり進み枝が露わになっているため、散り始め（落葉期）と判定。",
+      "caution": "投稿本文の見頃という記述と実際の写真の落葉状況に乖離があります。",
+      "consistency_note": "本文は「見頃」だが写真では落葉がかなり進んでいる。",
+      "area_detail": "",
+      "time_note": "本文に撮影日時や過去を示す明確な記述がないため。",
+      "stage": "散り始め",
+      "consistency": "矛盾",
+      "bloom_ratio": 25,
+      "confidence": 0.85,
+      "time_reference": "不明",
+      "lat": 36.7416,
+      "lng": 139.5167
+    },
+    "location": {
+      "lat": 36.7461592,
+      "lng": 139.5134283,
+      "source": "OSM Nominatim",
+      "query": "いろは坂 日光市 栃木県"
+    },
+    "gemini_location": {
+      "lat": 36.7416,
+      "lng": 139.5167,
+      "source": "Gemini 推定"
+    },
+    "validation": {
+      "ok": true,
+      "issues": [],
+      "warnings": [],
+      "locatable": true
+    },
+    "input": {
+      "text": "日光いろは坂、紅葉まっさかり！最高の見頃です✨ #いろは坂 #紅葉",
+      "sample": "s6",
+      "observed_at": "2026-10-21T14:05:00+09:00",
+      "synthetic": true,
+      "photo_taken_at": null,
+      "photo_time_source": null,
+      "fingerprint": "0fa0b74208b8c3aa"
+    },
+    "observed_at": "2026-10-21T14:05:00+09:00",
+    "analyzed_at": "2026-10-22T17:36:06+09:00"
+  }
+}

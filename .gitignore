@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+/results/
+node_modules/
+/shots/
+*.webm
+__pycache__/
+*.pyc
+.DS_Store

@@ -1,0 +1,53 @@
+{
+  "out": {
+    "result": {
+      "species": "彼岸花",
+      "stage_label": "咲き始め",
+      "place_name": "北堀公園",
+      "prefecture": "京都府",
+      "municipality": "京都市伏見区",
+      "evidence_image": "赤い蕾が大きく膨らみ、先端が一部開き始めている",
+      "evidence_text": "まだほとんど蕾で開いているのはほんの少しとの記載",
+      "reasoning": "写真は彼岸花の蕾が膨らみ一部が開いている様子を捉えており、本文の記述とも一致するため「咲き始め」と判定。",
+      "caution": "1株の近接撮影のため園内全体の状況を示すものではない",
+      "consistency_note": "写真・本文共に蕾中心で開花し始めの状況を示している",
+      "area_detail": "",
+      "time_note": "過去撮影を示す表現はなく現在の状況報告と推測される",
+      "stage": "咲き始め",
+      "consistency": "一致",
+      "bloom_ratio": 15,
+      "confidence": 0.95,
+      "time_reference": "投稿時の様子",
+      "lat": 34.9392,
+      "lng": 135.7766
+    },
+    "location": {
+      "lat": 34.9415051,
+      "lng": 135.7792777,
+      "source": "OSM Nominatim",
+      "query": "北堀公園 京都市伏見区 京都府"
+    },
+    "gemini_location": {
+      "lat": 34.9392,
+      "lng": 135.7766,
+      "source": "Gemini 推定"
+    },
+    "validation": {
+      "ok": true,
+      "issues": [],
+      "warnings": [],
+      "locatable": true
+    },
+    "input": {
+      "text": "伏見の北堀公園。まだほとんど蕾で、開いてるのはほんの少し。見頃は来週かな？",
+      "sample": "s2",
+      "observed_at": "2026-09-20T09:40:00+09:00",
+      "synthetic": true,
+      "photo_taken_at": null,
+      "photo_time_source": null,
+      "fingerprint": "fd6bb92be0772480"
+    },
+    "observed_at": "2026-09-20T09:40:00+09:00",
+    "analyzed_at": "2026-10-22T17:36:53+09:00"
+  }
+}
